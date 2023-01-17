@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlueCube : MonoBehaviour
+public class PinkCube : MonoBehaviour
 {
-
     private GameObject[] Waypoints;
     // Start is called before the first frame update
     void Start()
@@ -18,32 +17,32 @@ public class BlueCube : MonoBehaviour
         
     }
 
-    private void OnMouseDown()
+    void OnMouseDown()
     {
         Debug.Log(gameObject.name);
         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube.transform.position = Waypoints[1].transform.position;
-        StartCoroutine(teleportSpawnedCube(cube, 2f));
+        cube.transform.position = Waypoints[Waypoints.Length-1].transform.position;
+        StartCoroutine(translateSpawnedCube(cube, 3f));
     }
 
-    IEnumerator teleportSpawnedCube(GameObject cube, float timeToMove)
+    IEnumerator translateSpawnedCube(GameObject cube, float timeToMove)
     {
-        
-        for(int i = 1; i <= Waypoints.Length - 1; i++)
+        for (int i = Waypoints.Length - 1; i >= 0; i--)
         {
-            if( i == Waypoints.Length - 1)
+            if (i == 0)
             {
                 cube.SetActive(false);
                 Debug.Log("Travel ends !");
             }
             else
             {
-                cube.transform.position = Waypoints[i].transform.position;
-                yield return new WaitForSeconds(timeToMove);
+                Vector3 direction = cube.transform.position - Waypoints[i].transform.position;
+                transform.Translate(direction * 1f * Time.deltaTime);
                 Debug.Log("Time to move !");
-            }          
+            }
+            yield return new WaitForSeconds(timeToMove);
         }
-        
-        
+
     }
+
 }
